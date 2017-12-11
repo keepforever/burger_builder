@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+
 import Aus from '../../hoc/Aus';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
 
 // typically name constants you want to use as global constants in ALL CAPS
 const INGREDIENT_PRICES = {
@@ -20,7 +22,32 @@ class BurgerBuilder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice: 4
+        totalPrice: 4,
+        purchasable: false
+    }
+
+    updatePurchaseState = ( ingredients ) => {
+        // this method will check to see if any ingredients have been added
+        // then toggle the purchasable state between true/false, dependant on
+        // the state of the ingredients.
+        // second argument in the reduce() method is the starting value
+        // copying the ingredients from state doesn't give the correct info to analize
+        // so we instead pass the updatedIngredients into the updatePurchaseState() method
+        // at the end of add and remove ingredient handlers. Then perform the sum analysis
+        // on this newly passed ingredients argument.
+        // const ingredients = {
+        //     ...this.state.ingredients
+        // };
+        const sum = Object.keys(ingredients) // creates array of string entries (salad, bacon, etc...)
+            .map(igKey => {
+                return ingredients[igKey];
+            })
+            .reduce((sum, el) => {
+                return sum + el
+            }, 0);
+        this.setState({purchasable: sum > 0})
+
+
     }
 
     addIngredientHandler = (type) => {
@@ -36,6 +63,7 @@ class BurgerBuilder extends Component {
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice + priceAddition;
         this.setState({totalPrice: newPrice, ingredients: updatedIngredients })
+        this.updatePurchaseState(updatedIngredients);
     }
 
     removeIngredientHandler = (type) => {
@@ -54,6 +82,7 @@ class BurgerBuilder extends Component {
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice - priceDeduction;
         this.setState({totalPrice: newPrice, ingredients: updatedIngredients })
+        this.updatePurchaseState(updatedIngredients);
 
     }
 
@@ -67,11 +96,14 @@ class BurgerBuilder extends Component {
         }
         return (
           <Aus>
+              <Modal />
               <Burger ingredients={this.state.ingredients} />
               <BuildControls
                     ingredientAdded={this.addIngredientHandler}
                     ingredientRemoved={this.removeIngredientHandler}
-                    disabled={disabledInfo}/>
+                    disabled={disabledInfo}
+                    purchasable={this.state.purchasable}
+                    price={this.state.totalPrice}/>
           </Aus>
         );
         }
