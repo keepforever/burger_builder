@@ -1,12 +1,15 @@
 import React from 'react';
 import Aus from '../../hoc/Aus';
 import classes from './Layout.css';
+import Toolbar from '../Navigation/Toolbar/Toolbar';
+import SideDrawer from '../Navigation/SideDrawer/SideDrawer';
 
 const layout = ( props ) => (
     <Aus>
-        <div>TODO: Toolbar, SideDrawer, Backdrop</div>
+        <Toolbar />
+        <SideDrawer />
         <main className={classes.Content}>
-            {props.children}
+            { props.children }
         </main>
     </Aus>
 );
