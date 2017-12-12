@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import Aus from '../../hoc/Aus';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
-import Modal from '../../components/UI/Modal/Modal';
+import Modal from        '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/OrderSummary/OrderSummary';
 
 // typically name constants you want to use as global constants in ALL CAPS
 const INGREDIENT_PRICES = {
@@ -23,7 +24,8 @@ class BurgerBuilder extends Component {
             meat: 0
         },
         totalPrice: 4,
-        purchasable: false
+        purchasable: false,
+        purchasing: false
     }
 
     updatePurchaseState = ( ingredients ) => {
@@ -86,6 +88,21 @@ class BurgerBuilder extends Component {
 
     }
 
+    purchaseHandler = () => {
+        this.setState({purchasing: true});
+    }
+
+    purchaseCancelHandler = () => {
+        this.setState({purchasing: false})
+    }
+
+    purchaseContinueHandler = () => {
+        alert('You Continue!');
+    }
+
+
+
+
     render() {
         // need some logic to disable the "less" button if there is nothing to remove
         const disabledInfo = {
@@ -96,14 +113,21 @@ class BurgerBuilder extends Component {
         }
         return (
           <Aus>
-              <Modal />
+              <Modal show={this.state.purchasing}
+                     modalClosed={this.purchaseCancelHandler}>
+                  <OrderSummary
+                    ingredients={this.state.ingredients}
+                    purchaseCancelled={this.purchaseCancelHandler}
+                    purchaseContinued={this.purchaseContinueHandler}/>
+              </Modal>
               <Burger ingredients={this.state.ingredients} />
               <BuildControls
                     ingredientAdded={this.addIngredientHandler}
                     ingredientRemoved={this.removeIngredientHandler}
                     disabled={disabledInfo}
                     purchasable={this.state.purchasable}
-                    price={this.state.totalPrice}/>
+                    price={this.state.totalPrice}
+                    ordered={this.purchaseHandler}/>
           </Aus>
         );
         }
