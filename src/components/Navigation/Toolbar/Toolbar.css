@@ -16,3 +16,16 @@
 .Toolbar nav {
     height: 100%;
 }
+
+.Logo {
+    height: 80%;
+}
+
+/*add helper css class to hide toolbar navigation items when SideDrawer
+is open on mobile devices*/
+
+@media (max-width: 499px) {
+    .DesktopOnly {
+        display: none;
+    }
+}
