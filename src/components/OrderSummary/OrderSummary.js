@@ -1,34 +1,37 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import Aus from '../../hoc/Aus';
 import Button from '../UI/Button/Button';
 
-const orderSummary = ( props ) => {
-    // introduce constant for dynamic rendering of <ul></ul> contents
-    const ingredientSummary = Object.keys(props.ingredients)
-        .map(igKey => {
-            return (
-                <li key={igKey}>
-                    <span style={{textTransform: 'capitalize'}}> {igKey}</span>: {props.ingredients[igKey]}
-                </li>);
-        });
+class OrderSummary extends Component {
+    componentWillUpdate(){
+        console.log('[ORDER_SUMMARY] WILL UPDATE');
+    }
 
-    return (
-        <Aus>
-            <h3>Your Order</h3>
-            <p>A Delicious Burger with the following ingredients:</p>
-            <ul>
-                {ingredientSummary}
-            </ul>
-            <h4>Total Price: <strong>${props.totalSum.toFixed(2)}</strong></h4>
-            <p>Continue to Checkout?</p>
+    render (){
+        // introduce constant for dynamic rendering of <ul></ul> contents
+        const ingredientSummary = Object.keys(this.props.ingredients)
+            .map(igKey => {
+                return (
+                    <li key={igKey}>
+                        <span style={{textTransform: 'capitalize'}}> {igKey}</span>: {this.props.ingredients[igKey]}
+                    </li>);
+            });
+        return (
+            <Aus>
+                <h3>Your Order</h3>
+                <p>A Delicious Burger with the following ingredients:</p>
+                <ul>
+                    {ingredientSummary}
+                </ul>
+                <h4>Total Price: <strong>${this.props.totalSum.toFixed(2)}</strong></h4>
+                <p>Continue to Checkout?</p>
 
-            <Button btnType={'Danger'} clicked={props.purchaseCancelled}>CANCEL</Button>
-            <Button btnType={'Success'} clicked={props.purchaseContinued}>CONTINUE</Button>
-        </Aus>
-    );
-
-
+                <Button btnType={'Danger'} clicked={this.props.purchaseCancelled}>CANCEL</Button>
+                <Button btnType={'Success'} clicked={this.props.purchaseContinued}>CONTINUE</Button>
+            </Aus>
+        );
+    }
 };
 
-export default orderSummary;
+export default OrderSummary;

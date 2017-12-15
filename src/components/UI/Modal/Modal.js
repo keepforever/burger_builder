@@ -1,27 +1,41 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import classes from './Modal.css';
 import Aus from '../../../hoc/Aus';
 import Backdrop from '../Backdrop/Backdrop';
 
 
-const modal = ( props ) => (
-    <Aus>
-        <Backdrop show={props.show}
-                  clicked={props.modalClosed}/>
-        <div
-            className={classes.Modal}
-            style={{
-                transform: props.show ? 'translateY(0)' : 'translateY(-100vh)',
-                opacity: props.show ? '1' : '0'
-            }}>
-            {props.children}
-        </div>
-    </Aus>
-);
+class Modal extends Component {
+//  Here we're seaking performance gains. The Modal wraps the order summary
+//  which isn't visible until clicking "order now" button. We will try and
+//  the only reason to update is when the show property of Backdrop chagees.
+    shouldComponentUpdate(nextProps, nextState){
+        return nextProps.show !== this.props.show
+    }
+    componentWillUpdate (){
+        console.log('[MODAL] Will Update');
+    }
+    render() {
 
-export default modal;
 
-// this is a "wrapping component" and we utilze props.children
+        return(
+            <Aus>
+                <Backdrop show={this.props.show}
+                          clicked={this.props.modalClosed}/>
+                <div
+                    className={classes.Modal}
+                    style={{
+                        transform: this.props.show ? 'translateY(0)' : 'translateY(-100vh)',
+                        opacity: this.props.show ? '1' : '0'
+                    }}>
+                    {this.props.children}
+                </div>
+            </Aus>
+        );
+    }
+}
+export default Modal;
+
+// this is a "wrapping component" and we utilze this.props.children
 // to display whatever we wrap with <Modal></Modal> with a specific
 // styling or functionality.
