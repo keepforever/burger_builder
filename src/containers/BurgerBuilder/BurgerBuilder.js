@@ -4,7 +4,9 @@ import Aus from '../../hoc/Aus';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from        '../../components/UI/Modal/Modal';
+import Spinner from        '../../components/UI/Spinner/Spinner';
 import OrderSummary from '../../components/OrderSummary/OrderSummary';
+import axios from '../../axios-orders';
 
 // typically name constants you want to use as global constants in ALL CAPS
 const INGREDIENT_PRICES = {
@@ -25,7 +27,8 @@ class BurgerBuilder extends Component {
         },
         totalPrice: 4,
         purchasable: false,
-        purchasing: false
+        purchasing: false,
+        loading: false
     }
 
     updatePurchaseState = ( ingredients ) => {
@@ -97,11 +100,39 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        alert('You Continue!');
+        // Here we toggle the loading state to true so the
+        // spinner is displayed
+        this.setState( { loading: true } );
+        // alert('You Continue!');
+        // the .json appendage to the post route is required for
+        // Firebase to function correctly.
+        const order = {
+            ingredients: this.state.ingredients,
+            // in a real app, you would calculate price on the server
+            // to avoid user manipulating data before hitting server.
+            price: this.state.totalPrice,
+            customer: {
+                name: 'Brian Cilenti',
+                address: {
+                    street: '2443 44th',
+                    zipCode: '94116',
+                    country: 'USA'
+                },
+                email: 'heckler246@yahoo.com'
+            },
+            deliveryMethod: 'fastest'
+        }
+        axios.post('/orders.json', order)
+            .then(response => {
+                // console.log response
+
+                this.setState({loading: false, purchasing: false});
+            } )
+            .catch(error => {
+                // also want to set loading to false if we have an error.
+                this.setState({loading: false, purchasing: false});
+            } )
     }
-
-
-
 
     render() {
         // need some logic to disable the "less" button if there is nothing to remove
@@ -111,15 +142,23 @@ class BurgerBuilder extends Component {
         for (let key in disabledInfo) {
             disabledInfo[key] = (disabledInfo[key] <= 0)
         }
+        // Adding logic to conditionally show the spinner.
+        // First we set up alternative to spinner, the order OrderSummary
+        let orderSummary = <OrderSummary
+          ingredients={this.state.ingredients}
+          purchaseCancelled={this.purchaseCancelHandler}
+          purchaseContinued={this.purchaseContinueHandler}
+          totalSum={this.state.totalPrice}/>
+
+
+        if (this.state.loading){
+            orderSummary = <Spinner />
+        }
         return (
           <Aus>
               <Modal show={this.state.purchasing}
                      modalClosed={this.purchaseCancelHandler}>
-                  <OrderSummary
-                    ingredients={this.state.ingredients}
-                    purchaseCancelled={this.purchaseCancelHandler}
-                    purchaseContinued={this.purchaseContinueHandler}
-                    totalSum={this.state.totalPrice}/>
+                     {orderSummary}
               </Modal>
               <Burger ingredients={this.state.ingredients} />
               <BuildControls

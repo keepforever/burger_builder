@@ -10,7 +10,10 @@ class Modal extends Component {
 //  which isn't visible until clicking "order now" button. We will try and
 //  the only reason to update is when the show property of Backdrop chagees.
     shouldComponentUpdate(nextProps, nextState){
-        return nextProps.show !== this.props.show
+        // we need to fine tune the logic because the spinner will not show
+        // because the modal component isn't updating, only the children.
+        return ( nextProps.show !== this.props.show ||
+                 nextProps.children !== this.props.children )
     }
     componentWillUpdate (){
         console.log('[MODAL] Will Update');
