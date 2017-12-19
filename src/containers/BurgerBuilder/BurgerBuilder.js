@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 
-import Aus from '../../hoc/Aus';
-import Burger from '../../components/Burger/Burger';
-import BuildControls from '../../components/Burger/BuildControls/BuildControls';
-import Modal from        '../../components/UI/Modal/Modal';
-import Spinner from        '../../components/UI/Spinner/Spinner';
-import OrderSummary from '../../components/OrderSummary/OrderSummary';
-import axios from '../../axios-orders';
+import Aus from              '../../hoc/Aus';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import Burger from           '../../components/Burger/Burger';
+import BuildControls from    '../../components/Burger/BuildControls/BuildControls';
+import Modal from            '../../components/UI/Modal/Modal';
+import Spinner from          '../../components/UI/Spinner/Spinner';
+import OrderSummary from     '../../components/OrderSummary/OrderSummary';
+import axios from            '../../axios-orders';
 
 // typically name constants you want to use as global constants in ALL CAPS
 const INGREDIENT_PRICES = {
@@ -19,16 +20,27 @@ const INGREDIENT_PRICES = {
 class BurgerBuilder extends Component {
 
     state = {
-        ingredients: {
-            bacon: 0,
-            salad: 0,
-            cheese: 0,
-            meat: 0
-        },
+        ingredients: null,
         totalPrice: 4,
         purchasable: false,
         purchasing: false,
-        loading: false
+        loading: false,
+        error: false
+    }
+    // we will use componentDidMount to fetch the master list of ingredients
+    // from firebase backend, then distribute it to ingredinets when state
+    // is initialized.
+    componentDidMount = () => {
+        // must remember to append the .json even tho firebase link does not
+        // give it to you to copy that way.
+        axios.get('https://react-my-burger-963.firebaseio.com/ingredients.json')
+            .then(response => {
+                this.setState({ingredients: response.data});
+            })
+            .catch(error => {
+                this.setState({error: true})
+            })
+
     }
 
     updatePurchaseState = ( ingredients ) => {
@@ -144,14 +156,31 @@ class BurgerBuilder extends Component {
         }
         // Adding logic to conditionally show the spinner.
         // First we set up alternative to spinner, the order OrderSummary
-        let orderSummary = <OrderSummary
-          ingredients={this.state.ingredients}
-          purchaseCancelled={this.purchaseCancelHandler}
-          purchaseContinued={this.purchaseContinueHandler}
-          totalSum={this.state.totalPrice}/>
+        let orderSummary = null;
 
+        // here we will show a spinner while the master ingredients list is
+        // retrieved from the firebase ingredients master list.
+        let burger = this.state.error ? <p>Ingredients can't be loaded</p> : <Spinner />;
+        if (this.state.ingredients) {
+            burger = (
+                <Aus>
+                    <Burger ingredients={this.state.ingredients} />
+                    <BuildControls
+                      ingredientAdded={this.addIngredientHandler}
+                      ingredientRemoved={this.removeIngredientHandler}
+                      disabled={disabledInfo}
+                      purchasable={this.state.purchasable}
+                      price={this.state.totalPrice}
+                      ordered={this.purchaseHandler}/>
+                </Aus>);
+            orderSummary = <OrderSummary
+              ingredients={this.state.ingredients}
+              purchaseCancelled={this.purchaseCancelHandler}
+              purchaseContinued={this.purchaseContinueHandler}
+              totalSum={this.state.totalPrice}/>
+        }
 
-        if (this.state.loading){
+        if (this.state.loading) {
             orderSummary = <Spinner />
         }
         return (
@@ -160,20 +189,13 @@ class BurgerBuilder extends Component {
                      modalClosed={this.purchaseCancelHandler}>
                      {orderSummary}
               </Modal>
-              <Burger ingredients={this.state.ingredients} />
-              <BuildControls
-                    ingredientAdded={this.addIngredientHandler}
-                    ingredientRemoved={this.removeIngredientHandler}
-                    disabled={disabledInfo}
-                    purchasable={this.state.purchasable}
-                    price={this.state.totalPrice}
-                    ordered={this.purchaseHandler}/>
+              {burger}
           </Aus>
         );
         }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);
 
 // in this component we will control the dynamic rendering of ingredients
 // using state.
