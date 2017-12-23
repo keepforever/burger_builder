@@ -1,4 +1,10 @@
 import React from 'react';
+// using an advanced method to get the router props to the children
+// of a route rendered component. In this case, Burger is the child of
+// BurgerBuilder. this will give the Burger component match, location and
+// history properties accessed via props.match, etc.
+// import { withRouter } from 'react-router-dom';
+// withRouter(burger)
 
 import classes from './Burger.css';
 import BurgerIngredient from './BurgerIngredient/BurgerIngredient';

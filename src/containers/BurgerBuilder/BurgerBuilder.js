@@ -112,6 +112,11 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
+        /* No longer want to send to firebase immidiatly
+        want to navigate to checkout component instead.
+        Since BurgerBuilder is part of the routable area of our project
+        we have access to the match, location, and history props.
+
         // Here we toggle the loading state to true so the
         // spinner is displayed
         this.setState( { loading: true } );
@@ -144,6 +149,23 @@ class BurgerBuilder extends Component {
                 // also want to set loading to false if we have an error.
                 this.setState({loading: false, purchasing: false});
             } )
+        */
+        // push allows us to push a new page onto stack of pages
+        // we push a javsript object to pass along burger ingredinets as
+        // query parameters. encodeURIComponent is a helper method to
+        // make each individual query parameter suitble for use in the URL
+        // i.e. salad=1
+        const queryParams = [];
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+        }
+        const queryString = queryParams.join('&');
+
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        });
+        console.log('purchaseContinueHandler', this.props);
     }
 
     render() {

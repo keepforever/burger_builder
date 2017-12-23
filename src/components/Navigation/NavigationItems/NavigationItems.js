@@ -12,7 +12,7 @@ const navigationItems = ( props ) => (
         </NavigationItem>
         <NavigationItem
             link="/"
-            active>Checkout
+            active>My Orders
         </NavigationItem>
     </ul>
 );
