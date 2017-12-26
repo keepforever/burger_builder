@@ -112,44 +112,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        /* No longer want to send to firebase immidiatly
-        want to navigate to checkout component instead.
-        Since BurgerBuilder is part of the routable area of our project
-        we have access to the match, location, and history props.
 
-        // Here we toggle the loading state to true so the
-        // spinner is displayed
-        this.setState( { loading: true } );
-        // alert('You Continue!');
-        // the .json appendage to the post route is required for
-        // Firebase to function correctly.
-        const order = {
-            ingredients: this.state.ingredients,
-            // in a real app, you would calculate price on the server
-            // to avoid user manipulating data before hitting server.
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Brian Cilenti',
-                address: {
-                    street: '2443 44th',
-                    zipCode: '94116',
-                    country: 'USA'
-                },
-                email: 'heckler246@yahoo.com'
-            },
-            deliveryMethod: 'fastest'
-        }
-        axios.post('/orders.json', order)
-            .then(response => {
-                // console.log response
-
-                this.setState({loading: false, purchasing: false});
-            } )
-            .catch(error => {
-                // also want to set loading to false if we have an error.
-                this.setState({loading: false, purchasing: false});
-            } )
-        */
         // push allows us to push a new page onto stack of pages
         // we push a javsript object to pass along burger ingredinets as
         // query parameters. encodeURIComponent is a helper method to
@@ -159,6 +122,8 @@ class BurgerBuilder extends Component {
         for (let i in this.state.ingredients) {
             queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
         }
+        // passing along the total price to query parameters
+        queryParams.push('price=' + this.state.totalPrice);
         const queryString = queryParams.join('&');
 
         this.props.history.push({
