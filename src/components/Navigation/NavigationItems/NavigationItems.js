@@ -7,12 +7,10 @@ import NavigationItem from './NavigationItem/NavigationItem';
 const navigationItems = ( props ) => (
     <ul className={classes.NavigationItems}>
         <NavigationItem
-            link="/"
-            active>BurgerBuilder
+            link="/">BurgerBuilder
         </NavigationItem>
         <NavigationItem
-            link="/"
-            active>My Orders
+            link="/orders">Orders
         </NavigationItem>
     </ul>
 );
