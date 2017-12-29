@@ -4,17 +4,68 @@ import Button  from  '../../../components/UI/Button/Button';
 import classes from  './ContactData.css';
 import axios   from  '../../../axios-orders';
 import Spinner from  '../../../components/UI/Spinner/Spinner';
+import Input from  '../../../components/UI/Input/Input';
 
 class ContactData extends Component {
+// important to use default html element names inside elementConfig object
     state = {
-        name: '',
-        email: '',
-        address: {
-            street: '',
-            postalCode:''
+        orderForm: {
+            name: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Your Name'
+                },
+                value: ''
+            },
+            street: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Street'
+                },
+                value: ''
+            },
+            zipCode: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Postal Code'
+                },
+                value: ''
+            },
+            country: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Country'
+                },
+                value: ''
+            },
+            email: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'email',
+                    placeholder: 'Your Email'
+                },
+                value: ''
+            },
+            deliveryMethod: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {value: 'fastest', displayValue: 'Fastest'},
+                        {value: 'cheapest', displayValue: 'Cheapest'}
+                    ]
+                },
+                value: ''
+            },
         },
         loading: false
     }
+
+
+
 
     orderHandler = (event) => {
         event.preventDefault();
@@ -34,16 +85,7 @@ class ContactData extends Component {
             // in a real app, you would calculate price on the server
             // to avoid user manipulating data before hitting server.
             price: this.props.price,
-            customer: {
-                name: 'Brian Cilenti',
-                address: {
-                    street: '2443 44th',
-                    zipCode: '94116',
-                    country: 'USA'
-                },
-                email: 'heckler246@yahoo.com'
-            },
-            deliveryMethod: 'fastest'
+
         }
         axios.post('/orders.json', order)
             .then(response => {
@@ -58,14 +100,61 @@ class ContactData extends Component {
 
     }
 
+    inputChangedHandler = (event, inputIdentifier) => {
+    // we expect an event to be passed by React because this method is attached
+    // to an event listener, in this case, onChange.
+    // the inputIdentifier is needed to set up the two-way-binding so that
+    // we can update the correct value for the state.  The inputIdentifier
+    // originates from the id, generated in the formElementsArray for-in loop
+    // in the render method.
+        //console.log(event.target.value);
+        // immutably update state by first copying it into new variable
+    // Here we are to be aware that we need to "clone deeply", which means that
+    // the nexted objects, i.e. elementConfig, would not be handled immutably
+    // with our convential use of the spread operator
+        const updatedOrderForm = {
+            ...this.state.orderForm
+        };
+        // cloning deeply
+        const updatedFormElement = {
+            ...updatedOrderForm[inputIdentifier]
+        };
+        updatedFormElement.value = event.target.value;
+        updatedOrderForm[inputIdentifier] = updatedFormElement;
+        this.setState({orderForm: updatedOrderForm});
+
+    }
 
     render() {
+        // create all inputs dynamically. Turn order form object into
+        // array i can loop through with a 'for-in' loop
+        // config is = this.state.orderForm[key], which will be:
+        // {
+        //     elementType: 'input',
+        //     elementConfig: {
+        //         type: 'text',
+        //         text: 'Your Name'
+        //     },
+        //     value: ''
+        // }
+
+        const formElementsArray = [];
+        for (let key in this.state.orderForm) {
+            formElementsArray.push({
+                id: key,
+                config: this.state.orderForm[key]
+            });
+        }
         let form = (
             <form>
-                <input className={classes.Input} type="text" name="name" placeholder="Your name..." />
-                <input className={classes.Input} type="email" name="email" placeholder="Your email..." />
-                <input className={classes.Input} type="street" name="street" placeholder="Your street..." />
-                <input className={classes.Input} type="postalCode" name="postal" placeholder="Your Zip Code..." />
+                {formElementsArray.map(formElement => (
+                    <Input
+                        key={formElement.id}
+                        elementType={formElement.config.elementType}
+                        elementConfig={formElement.config.elementConfig}
+                        value={formElement.config.value}
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
+                ))}
                 <Button clicked={this.orderHandler} btnType="Success">ORDER</Button>
             </form>
         );
@@ -82,3 +171,21 @@ class ContactData extends Component {
 }
 
 export default ContactData
+// old dummy state
+// state = {
+//     name: '',
+//     email: '',
+//     address: {
+//         street: '',
+//         postalCode:''
+//     },
+//     loading: false
+// }
+// old version of the Form, wen't wit the old dummy state
+// <form>
+//    <Input  inputtype="input" type="text" name="name" placeholder="Your name..." />
+//    <Input  inputtype="input" type="email" name="email" placeholder="Your email..." />
+//    <Input  inputtype="input" type="street" name="street" placeholder="Your street..." />
+//    <Input  inputtype="input" type="postalCode" name="postal" placeholder="Your Zip Code..." />
+//    <Button clicked={this.orderHandler} btnType="Success">ORDER</Button>
+//</form>
