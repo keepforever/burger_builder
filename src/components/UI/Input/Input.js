@@ -13,18 +13,24 @@ import classes from './Input.css';
 
 const input = ( props ) => {
     let inputElement = null;
+    const inputClasses = [classes.InputElement];
+    // here we need to push the class conditionally and making sure to be
+    // mindful of css modules unique mutation of the class.
+    if (props.invalid && props.shouldValidate && props.touched) {
+        inputClasses.push(classes.Invalid);
+    }
 
     switch (props.elementType) {
         case ('input'):
             inputElement = <input
-                className={classes.InputElement}
+                className={inputClasses.join(' ')}
                 value={props.value}
                 onChange={props.changed}
                 {...props.elementConfig}/>
             break;
         case ('textarea'):
             inputElement = <textarea
-                className={classes.InputElement}
+                className={inputClasses.join(' ')}
                 value={props.value}
                 onChange={props.changed}
                 {...props.elementConfig}/>
@@ -34,7 +40,7 @@ const input = ( props ) => {
         // that sits in the select elements config options array
             inputElement = (
                 <select
-                    className={classes.InputElement}
+                    className={inputClasses.join(' ')}
                     value={props.value}
                     onChange={props.changed}>
                     {props.elementConfig.options.map(option => (
@@ -48,7 +54,7 @@ const input = ( props ) => {
 
         default:
             inputElement = <input
-                className={classes.InputElement}
+                className={inputClasses.join(' ')}
                 value={props.value}
                 onChange={props.changed}
                 {...props.elementConfig}/>
@@ -91,3 +97,58 @@ export default input;
 //     );
 //
 // };
+// Before adding input validation dynamic classes.
+// const input = ( props ) => {
+//     let inputElement = null;
+//
+//
+//     switch (props.elementType) {
+//         case ('input'):
+//             inputElement = <input
+//                 className={classes.InputElement}
+//                 value={props.value}
+//                 onChange={props.changed}
+//                 {...props.elementConfig}/>
+//             break;
+//         case ('textarea'):
+//             inputElement = <textarea
+//                 className={classes.InputElement}
+//                 value={props.value}
+//                 onChange={props.changed}
+//                 {...props.elementConfig}/>
+//             break;
+//         case ('select'):
+//         // option.value refers to value property in individual option object
+//         // that sits in the select elements config options array
+//             inputElement = (
+//                 <select
+//                     className={classes.InputElement}
+//                     value={props.value}
+//                     onChange={props.changed}>
+//                     {props.elementConfig.options.map(option => (
+//                         <option value={option.value} key={option.value}>
+//                             {option.displayValue}
+//                         </option>
+//                     ))}
+//                 </select>
+//             );
+//             break;
+//
+//         default:
+//             inputElement = <input
+//                 className={classes.InputElement}
+//                 value={props.value}
+//                 onChange={props.changed}
+//                 {...props.elementConfig}/>
+//     }
+//
+//     return (
+//         <div className={classes.Input}>
+//             <label className={classes.Label}>{props.label}</label>
+//             {inputElement}
+//         </div>
+//     );
+//
+// };
+//
+// export default input;
