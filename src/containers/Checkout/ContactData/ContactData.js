@@ -8,6 +8,8 @@ import Input from  '../../../components/UI/Input/Input';
 
 class ContactData extends Component {
 // important to use default html element names inside elementConfig object
+// state here is all UI state info and thus not a great candidate for
+// redux managment
     state = {
         orderForm: {
             name: {

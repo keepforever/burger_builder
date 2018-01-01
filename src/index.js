@@ -4,12 +4,23 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
+import { createStore } from 'redux';
+// we need to wrap the App component with Provider.  But with BrowserRouter
+// already wrapping the App, what to do?  We wrap everything with Provider
+// including BrowserRouter.
+import { Provider } from 'react-redux';
+import reducer from './store/reducer';
+
+// create store then pass it to the store prop in Provider. 
+const store = createStore(reducer);
 
 // enables the use of routing
 const app = (
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>
+    <Provider store={store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>
 );
 
 ReactDOM.render( app, document.getElementById('root') );
