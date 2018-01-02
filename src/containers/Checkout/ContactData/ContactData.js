@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Button  from  '../../../components/UI/Button/Button';
 import classes from  './ContactData.css';
@@ -151,7 +152,7 @@ class ContactData extends Component {
         // the .json appendage to the post route is required for
         // Firebase to function correctly.
         const order = {
-            ingredients: this.props.ingredients,
+            ingredients: this.props.ings,
             // in a real app, you would calculate price on the server
             // to avoid user manipulating data before hitting server.
             price: this.props.price,
@@ -252,7 +253,18 @@ class ContactData extends Component {
     }
 }
 
-export default ContactData
+// this will give us access to the ingredients property in our state via
+// "this.props.ings"
+const mapStateToProps = state => {
+    return {
+        ings: state.ingredients,
+        price: state.totalPrice
+    };
+}
+
+export default connect(mapStateToProps)(ContactData);
+
+
 // old dummy state
 // state = {
 //     name: '',

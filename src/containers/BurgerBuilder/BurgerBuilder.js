@@ -75,23 +75,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        // push allows us to push a new page onto stack of pages
-        // we push a javsript object to pass along burger ingredinets as
-        // query parameters. encodeURIComponent is a helper method to
-        // make each individual query parameter suitble for use in the URL
-        // i.e. salad=1
-        const queryParams = [];
-        for (let i in this.state.ingredients) {
-            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
-        }
-        // passing along the total price to query parameters
-        queryParams.push('price=' + this.props.price);
-        const queryString = queryParams.join('&');
-
-        this.props.history.push({
-            pathname: '/checkout',
-            search: '?' + queryString
-        });
+        this.props.history.push('/checkout');
         console.log('purchaseContinueHandler', this.props);
     }
 
