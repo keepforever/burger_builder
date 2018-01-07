@@ -9,10 +9,14 @@ import { createStore } from 'redux';
 // already wrapping the App, what to do?  We wrap everything with Provider
 // including BrowserRouter.
 import { Provider } from 'react-redux';
-import reducer from './store/reducer';
+import burgerBuilderReducer from './store/reducers/burgerBuilder';
 
-// create store then pass it to the store prop in Provider. 
-const store = createStore(reducer);
+// create store then pass it to the store prop in Provider.
+const store = createStore(
+    burgerBuilderReducer,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
 
 // enables the use of routing
 const app = (

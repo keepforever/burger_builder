@@ -1,4 +1,4 @@
-import * as actionTypes from './actions';
+import * as actionTypes from '../actions/actionTypes';
 
 // typically name constants you want to use
 // as global constants in ALL CAPS

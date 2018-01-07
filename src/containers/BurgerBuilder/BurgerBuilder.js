@@ -10,7 +10,8 @@ import Modal from            '../../components/UI/Modal/Modal';
 import Spinner from          '../../components/UI/Spinner/Spinner';
 import OrderSummary from     '../../components/OrderSummary/OrderSummary';
 import axios from            '../../axios-orders';
-import * as actionTypes from '../../store/actions';
+
+import * as burgerBuilderActions from '../../store/actions/index';
 
 
 
@@ -140,10 +141,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onIngredientAdded: (ingName) => dispatch(
-            {type: actionTypes.ADD_INGREDIENT, ingredientName: ingName }
+            burgerBuilderActions.addIngredient(ingName)
         ),
         onIngredientRemoved: (ingName) => dispatch(
-            {type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName }
+            burgerBuilderActions.removeIngredient(ingName)
         )
     }
 }
