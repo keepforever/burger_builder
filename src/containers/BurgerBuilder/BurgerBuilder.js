@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 // to hook up BurgerBuilder component to the Redux store we need 'connect'
-import { connect } from 'react-redux';
+import { connect }   from 'react-redux';
 
-import Aus from              '../../hoc/Aus';
+import Aus           from    '../../hoc/Aus';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import Burger from           '../../components/Burger/Burger';
+import Burger        from    '../../components/Burger/Burger';
 import BuildControls from    '../../components/Burger/BuildControls/BuildControls';
-import Modal from            '../../components/UI/Modal/Modal';
-import Spinner from          '../../components/UI/Spinner/Spinner';
-import OrderSummary from     '../../components/OrderSummary/OrderSummary';
-import axios from            '../../axios-orders';
+import Modal         from    '../../components/UI/Modal/Modal';
+import Spinner       from    '../../components/UI/Spinner/Spinner';
+import OrderSummary  from    '../../components/OrderSummary/OrderSummary';
+
+import      axios    from    '../../axios-orders';
+
 
 import * as burgerBuilderActions from '../../store/actions/index';
 
@@ -21,26 +23,18 @@ class BurgerBuilder extends Component {
 // we remove ingredients from the local state and replace with an 'ings'
 // call that we set up in mapStateToProps.
     state = {
-        purchasing: false,
-        loading: false,
-        error: false
+        purchasing: false
     }
     // we will use componentDidMount to fetch the master list of ingredients
     // from firebase backend, then distribute it to ingredinets when state
     // is initialized.
     componentDidMount = () => {
+        // call initIngredients to kick off the chain reaction
+        this.props.onInitIngredients();
         // must remember to append the .json even tho firebase link does not
         // give it to you to copy that way.
         console.log('BURGERBUILDER-componentDidMount:', this.props)
         // Commented out as we migrate ingredients mgmt to Redux.
-        // axios.get('https://react-my-burger-963.firebaseio.com/ingredients.json')
-        //     .then(response => {
-        //         this.setState({ingredients: response.data});
-        //     })
-        //     .catch(error => {
-        //         this.setState({error: true})
-        //     });
-
     }
 
     updatePurchaseState = ( ingredients ) => {
@@ -94,7 +88,7 @@ class BurgerBuilder extends Component {
 
         // here we will show a spinner while the master ingredients list is
         // retrieved from the firebase ingredients master list.
-        let burger = this.state.error ? <p>Ingredients can't be loaded</p> : <Spinner />;
+        let burger = this.props.error ? <p>Ingredients can't be loaded</p> : <Spinner />;
         if (this.props.ings) {
             burger = (
                 <Aus>
@@ -114,9 +108,7 @@ class BurgerBuilder extends Component {
               totalSum={this.props.price}/>
         }
 
-        if (this.state.loading) {
-            orderSummary = <Spinner />
-        }
+
         return (
           <Aus>
               <Modal show={this.state.purchasing}
@@ -134,7 +126,8 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => {
     return {
         ings: state.ingredients,
-        price: state.totalPrice
+        price: state.totalPrice,
+        error: state.error
     };
 }
 
@@ -145,7 +138,8 @@ const mapDispatchToProps = dispatch => {
         ),
         onIngredientRemoved: (ingName) => dispatch(
             burgerBuilderActions.removeIngredient(ingName)
-        )
+        ),
+        onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
