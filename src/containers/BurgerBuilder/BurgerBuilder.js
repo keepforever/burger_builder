@@ -13,7 +13,7 @@ import OrderSummary  from    '../../components/OrderSummary/OrderSummary';
 import      axios    from    '../../axios-orders';
 
 
-import * as burgerBuilderActions from '../../store/actions/index';
+import * as actions from '../../store/actions/index';
 
 
 
@@ -70,6 +70,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
+        this.props.onInitPurchase()
         this.props.history.push('/checkout');
         console.log('purchaseContinueHandler', this.props);
     }
@@ -122,67 +123,32 @@ class BurgerBuilder extends Component {
 }
 
 // this will give us access to the ingredients property in our state via
-// "this.props.ings"
+// "this.props.ings".  call the .burgerBuilder property on state because
+// we have two reducers that are combinded and when we configured them in
+// the main index.js, that's the property we attributed to
+// the burgerBuilderReducer.
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice,
-        error: state.error
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     };
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         onIngredientAdded: (ingName) => dispatch(
-            burgerBuilderActions.addIngredient(ingName)
+            actions.addIngredient(ingName)
         ),
         onIngredientRemoved: (ingName) => dispatch(
-            burgerBuilderActions.removeIngredient(ingName)
+            actions.removeIngredient(ingName)
         ),
-        onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
+        onInitIngredients: () => dispatch(
+            actions.initIngredients()
+        ),
+        onInitPurchase: () => dispatch(
+            actions.purchaseInit()
+        )
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
-
-// in this component we will control the dynamic rendering of ingredients
-// using state.
-// since we want to put ingredients on our burger (aka, tell the burger which
-// ingredients to render), we will pass in the ingredients object from the state
-// as a property.
-//
-// Removed upon introducing REDUX paradigm
-// addIngredientHandler = (type) => {
-//     const oldCount = this.state.ingredients[type];
-//     const updatedCount = oldCount + 1;
-//     // state should be updated in an immutable way, like so:
-//     const updatedIngredients = {
-//         ...this.state.ingredients
-//     }
-//     updatedIngredients[type] = updatedCount;
-//
-//     const priceAddition = INGREDIENT_PRICES[type];
-//     const oldPrice = this.state.totalPrice;
-//     const newPrice = oldPrice + priceAddition;
-//     this.setState({totalPrice: newPrice, ingredients: updatedIngredients })
-//     this.updatePurchaseState(updatedIngredients);
-// }
-//
-// removeIngredientHandler = (type) => {
-//     const oldCount = this.state.ingredients[type];
-//     if (oldCount <= 0) {
-//         return
-//     }
-//     const updatedCount = oldCount - 1;
-//     // state should be updated in an immutable way, like so:
-//     const updatedIngredients = {
-//         ...this.state.ingredients
-//     }
-//     updatedIngredients[type] = updatedCount;
-//
-//     const priceDeduction = INGREDIENT_PRICES[type];
-//     const oldPrice = this.state.totalPrice;
-//     const newPrice = oldPrice - priceDeduction;
-//     this.setState({totalPrice: newPrice, ingredients: updatedIngredients })
-//     this.updatePurchaseState(updatedIngredients);
-//
-// }

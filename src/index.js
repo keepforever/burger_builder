@@ -4,18 +4,27 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 // we need to wrap the App component with Provider.  But with BrowserRouter
 // already wrapping the App, what to do?  We wrap everything with Provider
 // including BrowserRouter.
 import { Provider } from 'react-redux';
 import burgerBuilderReducer from './store/reducers/burgerBuilder';
+import orderReducer from './store/reducers/order';
 
 import thunk from 'redux-thunk'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;// create store then pass it to the store prop in Provider.
+
+//  now we have different slices of state we're dealing with.
+// we accomodate for this in the mapStateToProps function of the components
+// that need each different slice of state.
+const rootReducer = combineReducers({
+    burgerBuilder: burgerBuilderReducer,
+    order: orderReducer
+})
 const store = createStore(
-    burgerBuilderReducer,
+    rootReducer,
     composeEnhancers(applyMiddleware(thunk))
 );
 

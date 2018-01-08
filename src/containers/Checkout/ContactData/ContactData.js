@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import Button  from  '../../../components/UI/Button/Button';
 import classes from  './ContactData.css';
 import axios   from  '../../../axios-orders';
 import Spinner from  '../../../components/UI/Spinner/Spinner';
 import Input from  '../../../components/UI/Input/Input';
+import * as actions from '../../../store/actions/index';
+
+
 
 class ContactData extends Component {
 // important to use default html element names inside elementConfig object
@@ -95,8 +98,7 @@ class ContactData extends Component {
                 valid: true
             },
         },
-        formIsValid: false,
-        loading: false
+        formIsValid: false
     }
     // we don't use the arrow syntax because we do not need to call
     // this method with the "this.method" syntax.
@@ -133,7 +135,7 @@ class ContactData extends Component {
 
     orderHandler = (event) => {
         event.preventDefault();
-        this.setState( { loading: true } );
+
         // console.log('[ContactData orderHandler]', this.props.ingredients);
         // No longer want to send to firebase immidiatly
         // want to navigate to checkout component instead.
@@ -158,6 +160,9 @@ class ContactData extends Component {
             price: this.props.price,
             orderData: formData
         }
+        // send order to the redux store
+
+        this.props.onOrderBurger(order);
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
@@ -230,7 +235,7 @@ class ContactData extends Component {
                 <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
             </form>
         );
-        if (this.state.loading) {
+        if (this.props.loading) {
             form = <Spinner />
         }
         return (
@@ -246,29 +251,17 @@ class ContactData extends Component {
 // "this.props.ings"
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        loading: state.order.loading
     };
 }
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrderBurger: (orderData) => dispatch(
+            actions.purchaseBurger(orderData))
+    }
+}
 
-
-// old dummy state
-// state = {
-//     name: '',
-//     email: '',
-//     address: {
-//         street: '',
-//         postalCode:''
-//     },
-//     loading: false
-// }
-// old version of the Form, wen't wit the old dummy state
-// <form>
-//    <Input  inputtype="input" type="text" name="name" placeholder="Your name..." />
-//    <Input  inputtype="input" type="email" name="email" placeholder="Your email..." />
-//    <Input  inputtype="input" type="street" name="street" placeholder="Your street..." />
-//    <Input  inputtype="input" type="postalCode" name="postal" placeholder="Your Zip Code..." />
-//    <Button clicked={this.orderHandler} btnType="Success">ORDER</Button>
-//</form>
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
