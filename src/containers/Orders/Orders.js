@@ -4,56 +4,49 @@ import axios from '../../axios-orders';
 // because we are fetching data from a backend, we want to handle catched
 // errors in a broader way.
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+// must import connect function for mapDispatchToProps
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
+import Spinner       from    '../../components/UI/Spinner/Spinner';
 
 class Orders extends Component {
-    // we use component did mount because we only want to fetch Orders
-    // when the Orders page is visited.  orders refers to the node in the
-    // backend.
-    state = {
-        orders: [],
-        loading: true
-    }
+
     componentDidMount() {
-        axios.get('/orders.json')
-            .then(res => {
-                // want to turn the javascript object we get back from firebase
-                // into an array.
-                const fetchedOrders = [];
-                // the keys in this for loop are the id's created by firebase
-                // ...res.data[key] distributes all properties of fetched object to
-                // the new object, appending the key as the idea, then pushes that
-                // to fetchedOrders.
-                for (let key in res.data) {
-                    fetchedOrders.push({
-                        ...res.data[key],
-                        id: key
-                    })
-                }
-
-                this.setState({loading: false, orders: fetchedOrders})
-
-            })
-            .catch(err => {
-                this.setState({loading: false})
-            });
-
+// kick off the async fetch orders trio of actions by 'flicking first domino'
+    this.props.onFetchOrders();
     }
-
     render(){
-
-
-        return(
-            <div>
-                {this.state.orders.map(order => (
-                    <Order 
+        let orders = <Spinner/>;
+        if (!this.props.loading) {
+            orders = this.props.orders.map(order => (
+                    <Order
                         key={order.id}
                         ingredients={order.ingredients}
                         price={order.price}/>
-                ))}
+                ) )
+        };
+        return(
+            <div>
+                {orders}
             </div>
-
         );
     }
 }
 
-export default withErrorHandler(Orders, axios)
+const mapStateToProps = state => {
+    return {
+// the order prop on state referes to the slice of state managed by the order reducer
+// orders then reaches out to the orders property in the state of the order reducer.
+        orders: state.order.orders,
+        loading: state.order.loading
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onFetchOrders: () => dispatch(
+            actions.fetchOrders()
+        )
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));

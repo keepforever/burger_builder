@@ -36,6 +36,25 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 loading: false
             };
+        case actionTypes.FETCH_ORDERS_START:
+            return {
+                ...state,
+// we reuse this loaing property for both pages async loading cases
+// because they will not occur at same time
+                loading: true
+            };
+        case actionTypes.FETCH_ORDERS_SUCCESS:
+            return {
+                ...state,
+// from fetchOrdersSuccess payload we have an orders property we access on action
+                orders: action.orders,
+                loading: false
+            };
+        case actionTypes.FETCH_ORDERS_FAIL:
+            return {
+                ...state,
+                loading: false
+            }
         default:
             return state;
     }
