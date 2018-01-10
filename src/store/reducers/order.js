@@ -13,7 +13,6 @@ const purchaseInit = (state, action) => {
 const purchaseBurgerStart = (action, state) => {
     return updateObject(state, {loading: true})
 }
-
 const purchaseBurgerSuccess = (action, state) => {
     const newOrder = updateObject(action.orderData, {id: action.orderId})
     return updateObject(state, {
@@ -22,7 +21,6 @@ const purchaseBurgerSuccess = (action, state) => {
         purchased: true
     });
 }
-
 const purchaseBurgerFail = (action, state) => {
     return updateObject(state, {loading: false });
 }
@@ -30,7 +28,6 @@ const purchaseBurgerFail = (action, state) => {
 const fetchOrdersStart = (state, action) => {
     return updateObject(state, {loading: true })
 }
-
 const fetchOrdersSuccess = (state, action) => {
     return updateObject(state, {
         orders: action.orders,

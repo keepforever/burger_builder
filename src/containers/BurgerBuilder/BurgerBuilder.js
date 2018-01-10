@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 // to hook up BurgerBuilder component to the Redux store we need 'connect'
 import { connect }   from 'react-redux';
-
 import Aus           from    '../../hoc/Aus';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Burger        from    '../../components/Burger/Burger';
@@ -9,10 +8,7 @@ import BuildControls from    '../../components/Burger/BuildControls/BuildControl
 import Modal         from    '../../components/UI/Modal/Modal';
 import Spinner       from    '../../components/UI/Spinner/Spinner';
 import OrderSummary  from    '../../components/OrderSummary/OrderSummary';
-
 import      axios    from    '../../axios-orders';
-
-
 import * as actions from '../../store/actions/index';
 
 
@@ -20,8 +16,7 @@ import * as actions from '../../store/actions/index';
 class BurgerBuilder extends Component {
 // purchasing, loading, and error are local UI state and
 // thus not a good candidate for managing with redux (i.e. overkill).
-// we remove ingredients from the local state and replace with an 'ings'
-// call that we set up in mapStateToProps.
+
     state = {
         purchasing: false
     }
@@ -121,7 +116,8 @@ class BurgerBuilder extends Component {
         );
         }
 }
-
+// we remove ingredients from the local state and replace with an 'ings'
+// call that we set up in mapStateToProps.
 // this will give us access to the ingredients property in our state via
 // "this.props.ings".  call the .burgerBuilder property on state because
 // we have two reducers that are combinded and when we configured them in
