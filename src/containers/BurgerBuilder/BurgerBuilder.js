@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-// to hook up BurgerBuilder component to the Redux store we need 'connect'
-import { connect }   from 'react-redux';
+import      axios    from    '../../axios-orders';
+import * as actions from '../../store/actions/index';
+
 import Aus           from    '../../hoc/Aus';
-import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Burger        from    '../../components/Burger/Burger';
 import BuildControls from    '../../components/Burger/BuildControls/BuildControls';
 import Modal         from    '../../components/UI/Modal/Modal';
 import Spinner       from    '../../components/UI/Spinner/Spinner';
 import OrderSummary  from    '../../components/OrderSummary/OrderSummary';
-import      axios    from    '../../axios-orders';
-import * as actions from '../../store/actions/index';
 
-
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+// to hook up BurgerBuilder component to the Redux store we need 'connect'
+import { connect }   from 'react-redux';
 
 class BurgerBuilder extends Component {
 // purchasing, loading, and error are local UI state and
