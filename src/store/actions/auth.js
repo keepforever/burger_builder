@@ -7,10 +7,11 @@ export const authStart = () => {
     }
 };
 
-export const authSuccess = (authData) => {
+export const authSuccess = (token, userId) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
-        authData: authData
+        userId: userId,
+        idToken: token
     }
 };
 
@@ -22,21 +23,25 @@ export const authFail = (error) => {
 }
 
 // async action creator thanks to redux-thunk
-export const auth = (email, password) => {
+// isSignUp argument allow us to distinguish between "sign-in" and "sign-up"
+// we then conditionally swap out API endpoint targets, depending
+export const auth = (email, password, isSignUp) => {
     return dispatch => {
-        console.log('email', email)
-        console.log('password', password)
         dispatch(authStart());
-        const APIurl = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCB1HaXTK2qiqsr1BmQW936xcfgjvxNwmI';
         const authData = {
             email: email,
             password: password,
             returnSecureToken: true
         }
-        axios.post(APIurl, authData)
+        console.log('isSignUp:', isSignUp)
+        let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCB1HaXTK2qiqsr1BmQW936xcfgjvxNwmI';
+        if (!isSignUp) {
+            url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCB1HaXTK2qiqsr1BmQW936xcfgjvxNwmI'
+        }
+        axios.post(url, authData)
             .then(response => {
                 console.log('POST RESPONSE:', response)
-                dispatch(authSuccess(response.data))
+                dispatch(authSuccess(response.data.idToken, response.data.localId))
             })
             .catch(err => {
                 console.log(err);
