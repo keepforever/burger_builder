@@ -21,6 +21,21 @@ export const authFail = (error) => {
         error: error
     }
 }
+// to invalidate auth token after it's 1 hour is up
+// multiply expiration time by 1000 to turn miliseconds to seconds
+export const checkAuthTimeout = (expirationTime) => {
+    return dispatch => {
+        setTimeout(() => {
+            dispatch(logout());
+        }, expirationTime*1000);
+    };
+};
+
+export const logout = () => {
+    return {
+        type: actionTypes.AUTH_LOGOUT
+    }
+};
 
 // async action creator thanks to redux-thunk
 // isSignUp argument allow us to distinguish between "sign-in" and "sign-up"
@@ -42,10 +57,11 @@ export const auth = (email, password, isSignUp) => {
             .then(response => {
                 console.log('POST RESPONSE:', response)
                 dispatch(authSuccess(response.data.idToken, response.data.localId))
+                dispatch(checkAuthTimeout(response.data.expiresIn))
             })
             .catch(err => {
                 console.log(err);
-                dispatch(authFail(err))
+                dispatch(authFail(err.response.data.error))
             })
     }
 }

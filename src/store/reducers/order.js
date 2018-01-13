@@ -10,10 +10,10 @@ const initialState = {
 const purchaseInit = (state, action) => {
     return updateObject(state, {purchased: false})
 }
-const purchaseBurgerStart = (action, state) => {
+const purchaseBurgerStart = (state, action ) => {
     return updateObject(state, {loading: true})
 }
-const purchaseBurgerSuccess = (action, state) => {
+const purchaseBurgerSuccess = (state, action) => {
     const newOrder = updateObject(action.orderData, {id: action.orderId})
     return updateObject(state, {
         loading: false,
@@ -21,7 +21,7 @@ const purchaseBurgerSuccess = (action, state) => {
         purchased: true
     });
 }
-const purchaseBurgerFail = (action, state) => {
+const purchaseBurgerFail = (state, action) => {
     return updateObject(state, {loading: false });
 }
 

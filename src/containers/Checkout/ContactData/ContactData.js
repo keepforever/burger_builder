@@ -135,7 +135,6 @@ class ContactData extends Component {
 
     orderHandler = (event) => {
         event.preventDefault();
-
         // console.log('[ContactData orderHandler]', this.props.ingredients);
         // No longer want to send to firebase immidiatly
         // want to navigate to checkout component instead.
@@ -162,10 +161,8 @@ class ContactData extends Component {
         }
         // send order to the redux store
 
-        this.props.onOrderBurger(order);
+        this.props.onOrderBurger(order, this.props.token);
     }
-
-    inputChangedHandler = (event, inputIdentifier) => {
     // we expect an event to be passed by React because this method is attached
     // to an event listener, in this case, onChange.
     // the inputIdentifier is needed to set up the two-way-binding so that
@@ -177,6 +174,8 @@ class ContactData extends Component {
     // Here we are to be aware that we need to "clone deeply", which means that
     // the nexted objects, i.e. elementConfig, would not be handled immutably
     // with our convential use of the spread operator
+    inputChangedHandler = (event, inputIdentifier) => {
+
         const updatedOrderForm = {
             ...this.state.orderForm
         };
@@ -199,18 +198,6 @@ class ContactData extends Component {
     }
 
     render() {
-        // create all inputs dynamically. Turn order form object into
-        // array i can loop through with a 'for-in' loop
-        // config is = this.state.orderForm[key], which will be:
-        // {
-        //     elementType: 'input',
-        //     elementConfig: {
-        //         type: 'text',
-        //         text: 'Your Name'
-        //     },
-        //     value: ''
-        // }
-
         const formElementsArray = [];
         for (let key in this.state.orderForm) {
             formElementsArray.push({
@@ -240,7 +227,7 @@ class ContactData extends Component {
         }
         return (
             <div className={classes.ContactData}>
-                <h4>Enter Shipping and Contact Info.  You can trust me.  I love you. And, in time, you will love me too.</h4>
+                <h4>Enter Shipping and Contact Info. </h4>
                 {form}
             </div>
         );
@@ -253,14 +240,15 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token
     };
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onOrderBurger: (orderData) => dispatch(
-            actions.purchaseBurger(orderData))
+        onOrderBurger: (orderData, token) => dispatch(
+            actions.purchaseBurger(orderData, token))
     }
 }
 

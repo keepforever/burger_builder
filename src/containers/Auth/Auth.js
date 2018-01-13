@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 // to hook up BurgerBuilder component to the Redux store we need 'connect'
 import { connect }   from 'react-redux';
@@ -98,6 +99,8 @@ class Auth extends Component {
         })
     }
     render () {
+
+
         const formElementsArray = [];
         for (let key in this.state.controls) {
             formElementsArray.push({
@@ -105,7 +108,7 @@ class Auth extends Component {
                 config: this.state.controls[key]
             });
         }
-        const form = formElementsArray.map(formElement => (
+        let form = formElementsArray.map(formElement => (
             <Input
                 key={formElement.id}
                 elementType={formElement.config.elementType}
@@ -116,8 +119,38 @@ class Auth extends Component {
                 touched={formElement.config.touched}
                 changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
         ) );
+
+        if(this.props.loading){
+            form = <Spinner />
+        }
+
+        let authClairity = null;
+
+        if (this.state.isSignUp) {
+            authClairity = (
+                <h4>Please create account</h4>
+            )
+        } else {
+            authClairity = (
+                <h4>Welcome Back!</h4>
+
+            )
+        }
+
+        let errorMessage = null;
+        // firebase gives message property on error that we call in if statement
+        if (this.props.error){
+            errorMessage = (
+                <div>
+                    <h3>Error: </h3>
+                    <p>{this.props.error.message}</p>
+                </div>
+            );
+        }
         return (
             <div className={classes.Auth}>
+                {errorMessage}
+                {authClairity}
                 <form onSubmit={this.submitHandler}>
                     {form}
                     <Button btnType="Success">SUBMIT</Button>
@@ -135,4 +168,13 @@ const mapDispatchToProps = dispatch => {
         onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
     }
 }
-export default connect(null, mapDispatchToProps)(Auth);
+
+// we call auth property to get the slice of state managed by the suth reducer
+// "auth" specified in the index.js combineReducers function
+const mapStateToProps = state => {
+    return {
+        loading: state.auth.loading,
+        error: state.auth.error
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

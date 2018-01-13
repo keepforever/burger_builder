@@ -13,7 +13,7 @@ class Orders extends Component {
 
     componentDidMount() {
 // kick off the async fetch orders trio of actions by 'flicking first domino'
-    this.props.onFetchOrders();
+    this.props.onFetchOrders(this.props.token);
     }
     render(){
         let orders = <Spinner/>;
@@ -38,14 +38,15 @@ const mapStateToProps = state => {
 // the order prop on state referes to the slice of state managed by the order reducer
 // orders then reaches out to the orders property in the state of the order reducer.
         orders: state.order.orders,
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchOrders: () => dispatch(
-            actions.fetchOrders()
+        onFetchOrders: (token) => dispatch(
+            actions.fetchOrders(token)
         )
     }
 }

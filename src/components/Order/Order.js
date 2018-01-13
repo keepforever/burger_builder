@@ -35,13 +35,3 @@ const order = ( props ) => {
     );
 }
 export default order;
-// Number.parseFloat(string) makes a string to a number.  .toFixed then takes
-// that Numbe and rounds it off at 2 decimal places.
-// Alternativley we could have coverted it to a number when passing it in
-// and adding a "+" to the front of it.
-// <Order
-// key={order.id}
-// ingredients={order.ingredients}
-// price={+order.price}/>
-
-// need to convert ingredients object to an array so we can loop through it.

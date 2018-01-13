@@ -22,17 +22,17 @@ export const purchaseBurgerStart = () => {
 };
 
 // asynchronous, dispatch function thanks to redux-thunk
-export const purchaseBurger = (orderData) => {
+export const purchaseBurger = ( orderData, token ) => {
     return dispatch => {
         dispatch( purchaseBurgerStart() );
-        axios.post('/orders.json', orderData)
-        .then(response => {
-            console.log(response.data)
-            dispatch(purchaseBurgerSuccess(response.data.name, orderData))
-        })
-        .catch(error => {
-            dispatch(purchaseBurgerFail(error))
-        });
+        axios.post( '/orders.json?auth=' + token, orderData )
+            .then( response => {
+                console.log( response.data );
+                dispatch( purchaseBurgerSuccess( response.data.name, orderData ) );
+            } )
+            .catch( error => {
+                dispatch( purchaseBurgerFail( error ) );
+            } );
     };
 };
 
@@ -62,10 +62,16 @@ export const fetchOrdersStart = () => {
     }
 };
 // here we run the asynchronous code to fetch the orders.
-export const fetchOrders = () => {
+// to implement protected resources, add query param to
+// the get request, passing along the token
+// we could pass getState along with dispatch into our first return
+// to access the token from our auth reducer return (dispatch, getState) => ...
+// passing getState not reccomended by instructor.  We will get it when we
+// dispatch the action in the Orders page
+export const fetchOrders = (token) => {
     return dispatch => {
         dispatch(fetchOrdersStart());
-        axios.get('/orders.json')
+        axios.get('/orders.json?auth=' + token )
             .then(res => {
                 const fetchedOrders = [];
                 for (let key in res.data) {
