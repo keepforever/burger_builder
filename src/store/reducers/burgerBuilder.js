@@ -8,11 +8,14 @@ const INGREDIENT_PRICES = {
     meat: 1.3,
     bacon: 0.7
 }
-
+// "building" helpse handle the case of an un-authenticated user building a burger
+// then redirecting them to the contact data after they sign up and not lose the
+// burger they have built.
 const initialState = {
     ingredients: null,
     totalPrice: 4,
-    error: false
+    error: false,
+    building: false
 };
 // extract switch statement logic into it's own function.
 // function name matches actionTypes.ADD_INGREDIENT, but camelCase
@@ -21,7 +24,8 @@ const addIngredient = (state, action) => {
     const updatedIngredients = updateObject(state.ingredients, updatedIngredient)
     const updatedState = {
         ingredients: updatedIngredients,
-        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        building: true
     }
     return updateObject(state, updatedState)
 }
@@ -40,7 +44,8 @@ const setIngredients = (state, action) => {
     return updateObject(state, {
         ingredients: action.ingredients,
         totalPrice: 4,
-        error: false
+        error: false,
+        building: false // building to false at page reload
     } );
 }
 const reducer = (state=initialState, action) => {

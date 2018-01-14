@@ -28,7 +28,7 @@ class BurgerBuilder extends Component {
         this.props.onInitIngredients();
         // must remember to append the .json even tho firebase link does not
         // give it to you to copy that way.
-        console.log('BURGERBUILDER-componentDidMount:', this.props)
+        console.log('BURGERBUILDER all props', this.props)
         // Commented out as we migrate ingredients mgmt to Redux.
     }
 
@@ -55,10 +55,17 @@ class BurgerBuilder extends Component {
 
 
     }
-// we only want to set purchasing to "true" if authenticated. Otherwise, 
+// we only want to set purchasing to "true" if authenticated. Otherwise,
 // we want to redirect to Authentication/SignUp page.
     purchaseHandler = () => {
-        this.setState({purchasing: true});
+        if (this.props.isAuthenticated) {
+            this.setState({purchasing: true});
+        } else {
+            this.props.onSetAuthRedirectPath('/checkout');
+            // from react router
+            this.props.history.push('/auth')
+        }
+
     }
 
     purchaseCancelHandler = () => {
@@ -136,6 +143,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        onSetAuthRedirectPath: (path) => dispatch(
+            actions.setAuthRedirectPath(path)
+        ),
         onIngredientAdded: (ingName) => dispatch(
             actions.addIngredient(ingName)
         ),
