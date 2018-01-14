@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import Aus from '../../hoc/Aus';
 import classes from './Layout.css';
 import Toolbar from '../Navigation/Toolbar/Toolbar';
@@ -22,8 +24,11 @@ class Layout extends Component {
     render () {
         return (
             <Aus>
-                <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
+                <Toolbar
+                    drawerToggleClicked={this.sideDrawerToggleHandler}
+                    isAuth={this.props.isAuthenticated}/>
                 <SideDrawer
+                    isAuth={this.props.isAuthenticated}
                     open={this.state.showSideDrawer}
                     closed={this.sideDrawerClosedHandler} />
                 <main className={classes.Content}>
@@ -34,8 +39,14 @@ class Layout extends Component {
     }
 }
 
-export default Layout;
-// in the main div above, we want to display the components that we
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.auth.token !== null
+    }
+}
+
+export default connect(mapStateToProps)(Layout);
+// in the "main" div above, we want to display the components that we
 // we wrap with the layout container.
 // we're not allowed to have adjacent elements.  Instead of wrapping
 // with another div, we will create a higher-order-component to wrap.

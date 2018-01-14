@@ -55,7 +55,8 @@ class BurgerBuilder extends Component {
 
 
     }
-
+// we only want to set purchasing to "true" if authenticated. Otherwise, 
+// we want to redirect to Authentication/SignUp page.
     purchaseHandler = () => {
         this.setState({purchasing: true});
     }
@@ -90,6 +91,7 @@ class BurgerBuilder extends Component {
                 <Aus>
                     <Burger ingredients={this.props.ings} />
                     <BuildControls
+                      isAuth={this.props.isAuthenticated}
                       ingredientAdded={this.props.onIngredientAdded}
                       ingredientRemoved={this.props.onIngredientRemoved}
                       disabled={disabledInfo}
@@ -127,7 +129,8 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
-        error: state.burgerBuilder.error
+        error: state.burgerBuilder.error,
+        isAuthenticated: state.auth.token !== null
     };
 }
 
