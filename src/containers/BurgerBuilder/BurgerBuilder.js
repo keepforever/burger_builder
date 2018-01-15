@@ -41,7 +41,7 @@ class BurgerBuilder extends Component {
         // so we instead pass the updatedIngredients into the updatePurchaseState() method
         // at the end of add and remove ingredient handlers. Then perform the sum analysis
         // on this newly passed ingredients argument.
-        // const ingredients = {
+        // const ingredients = {  .
         //     ...this.state.ingredients
         // };
         const sum = Object.keys(ingredients) // creates array of string entries (salad, bacon, etc...).

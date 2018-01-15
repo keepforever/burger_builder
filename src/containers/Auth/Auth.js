@@ -48,7 +48,7 @@ class Auth extends Component {
     }
     componentDidMount() {
         if (!this.props.buildingBurger && this.props.authRedirectPath !== '/') {
-            this.props.onSetAuthRedirectPath(); // no argument passed because we hard coded
+            this.props.onSetAuthRedirectPath(); // no argument passed because we hard code in mapDispatchToProps
         }
     }
     submitHandler = (event) => {
