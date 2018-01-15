@@ -68,10 +68,16 @@ export const fetchOrdersStart = () => {
 // to access the token from our auth reducer return (dispatch, getState) => ...
 // passing getState not reccomended by instructor.  We will get it when we
 // dispatch the action in the Orders page
-export const fetchOrders = (token) => {
+export const fetchOrders = (token, userId) => {
     return dispatch => {
         dispatch(fetchOrdersStart());
-        axios.get('/orders.json?auth=' + token )
+        // to only fetch specific orders belonging to user
+        // '&orderBy' is known by firebase to set a filter method
+        // 'equalTo' refers to the key we're ordering by, 'userId'
+        // must adjust database rules in firebase to make orders indexable/combable
+        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"'
+        // old: axios.get('/orders.json?auth=' + token ) .
+        axios.get('/orders.json' + queryParams ) // new
             .then(res => {
                 const fetchedOrders = [];
                 for (let key in res.data) {
@@ -80,6 +86,7 @@ export const fetchOrders = (token) => {
                         id: key
                     })
                 }
+                console.log('fetchedOrders', fetchedOrders)
                 dispatch(fetchOrdersSuccess(fetchedOrders));
             })
             .catch(err => {

@@ -12,10 +12,12 @@ const sideDrawer = ( props ) => {
     if (props.open) {
         attachedClasses = [classes.SideDrawer, classes.Open];
     }
+    // we use onClick in the div that contains our Nav items to close the
+    // drawer whenever user clicks a link
     return (
         <Aus>
             <Backdrop show={props.open} clicked={props.closed}/>
-            <div className={attachedClasses.join(' ')}>
+            <div className={attachedClasses.join(' ')} onClick={props.closed}>
                 <div className={classes.Logo}>
                     <Logo />
                 </div>

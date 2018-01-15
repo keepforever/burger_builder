@@ -157,7 +157,8 @@ class ContactData extends Component {
             // in a real app, you would calculate price on the server
             // to avoid user manipulating data before hitting server.
             price: this.props.price,
-            orderData: formData
+            orderData: formData,
+            userId: this.props.userId
         }
         // send order to the redux store
 
@@ -236,12 +237,15 @@ class ContactData extends Component {
 
 // this will give us access to the ingredients property in our state via
 // "this.props.ings"
+// we grab userId from the store to use in displaying user specific info
+// and making it a property on the order object that gets stored on server.
 const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
         loading: state.order.loading,
-        token: state.auth.token
+        token: state.auth.token,
+        userId: state.auth.userId
     };
 }
 
