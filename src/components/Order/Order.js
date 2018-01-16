@@ -26,7 +26,7 @@ const order = ( props ) => {
             }}
             key={ig.name}>{ig.name} ({ig.amount})</span>;
     });
-    console.log("[ORDER] ingredientOutput", ingredientOutput )
+    // console.log("[ORDER] ingredientOutput", ingredientOutput )
     return (
         <div className={classes.Order}>
             <p>Ingredients: {ingredientOutput}</p>

@@ -13,9 +13,12 @@ import burgerBuilderReducer from './store/reducers/burgerBuilder';
 import orderReducer from './store/reducers/order';
 import authReducer from './store/reducers/auth';
 
-import thunk from 'redux-thunk'
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;// create store then pass it to the store prop in Provider.
+import thunk from 'redux-thunk';
+// process.env.NODE_ENV is project set-up specific, for this app, we used
+// create-react-app, then ejected, then altered config files for CSS Modules.
+// process.env.NODE_ENV allows us to check if we're in development and, if so,
+// allow access to Redux Devtools, otherwise not for production
+const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;// create store then pass it to the store prop in Provider.
 
 //  now we have different slices of state we're dealing with.
 // we accomodate for this in the mapStateToProps function of the components

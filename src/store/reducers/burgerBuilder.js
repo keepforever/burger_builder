@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../utility';
+import { updateObject } from '../../shared/utility';
 // typically name constants you want to use
 // as global constants in ALL CAPS
 const INGREDIENT_PRICES = {

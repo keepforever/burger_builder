@@ -28,7 +28,7 @@ class BurgerBuilder extends Component {
         this.props.onInitIngredients();
         // must remember to append the .json even tho firebase link does not
         // give it to you to copy that way.
-        console.log('BURGERBUILDER all props', this.props)
+        // console.log('BURGERBUILDER all props', this.props);
         // Commented out as we migrate ingredients mgmt to Redux.
     }
 
@@ -75,7 +75,7 @@ class BurgerBuilder extends Component {
     purchaseContinueHandler = () => {
         this.props.onInitPurchase()
         this.props.history.push('/checkout');
-        console.log('purchaseContinueHandler', this.props);
+        // console.log('purchaseContinueHandler', this.props);
     }
 
     render() {
