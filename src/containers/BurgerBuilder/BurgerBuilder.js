@@ -13,7 +13,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 // to hook up BurgerBuilder component to the Redux store we need 'connect'
 import { connect }   from 'react-redux';
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
 // purchasing, loading, and error are local UI state and
 // thus not a good candidate for managing with redux (i.e. overkill).
 
